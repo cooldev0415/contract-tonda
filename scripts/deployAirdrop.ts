@@ -1,14 +1,17 @@
 import { ethers, run } from "hardhat";
 
 async function main() {
-  // First, get the deployed token address
-  const tokenAddress = "REPLACE_WITH_DEPLOYED_TOKEN_ADDRESS"; // Replace with your deployed token address
-  const airdropAmount = ethers.parseEther("100"); // 100 tokens per user
-
   console.log("Deploying Tonda Airdrop...");
 
+  // Get the TondaToken address
+  const tokenAddress = "0xf193272bb87a0A8426Eb5922a40193e8B7A17EeD"; // The address of the deployed TondaToken
+  
+  // Set token per point value (1 token per point)
+  const tokenPerPoint = ethers.parseEther("1");
+
+  // Deploy the airdrop contract
   const TondaAirdrop = await ethers.getContractFactory("TondaAirdrop");
-  const airdrop = await TondaAirdrop.deploy(tokenAddress, airdropAmount);
+  const airdrop = await TondaAirdrop.deploy(tokenAddress, tokenPerPoint);
 
   await airdrop.waitForDeployment();
 
@@ -22,7 +25,7 @@ async function main() {
   console.log("Verifying contract...");
   await run("verify:verify", {
     address: address,
-    constructorArguments: [tokenAddress, airdropAmount],
+    constructorArguments: [tokenAddress, tokenPerPoint],
   });
 
   console.log("Contract verified!");
